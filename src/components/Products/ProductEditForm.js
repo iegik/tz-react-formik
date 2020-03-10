@@ -1,74 +1,118 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Field, Form, Formik, ErrorMessage } from 'formik';
-import { Input, FormGroup, Label, Button } from 'reactstrap'
+import { FastField, Form, Formik, ErrorMessage } from 'formik';
+import { Input, CustomInput, FormGroup, Label, Button } from 'reactstrap';
+import moment from 'moment';
 import CategoryType from './CategoryType';
+import MultiSelect from './MultiSelect';
 
-const ProductEditForm = ({ onSubmit, onCancel, product, categories = [] }) => (
-  <Formik initialValues={product} onSubmit={onSubmit}>
+const DATE_FORMAT = 'YYYY-MM-DD';
+const parseDate = timestamp => moment(timestamp ? new Date(timestamp) : null).format(DATE_FORMAT);
+
+const ProductEditForm = ({ onSubmit, onCancel, onChange, product, categories = [] }) => (
+  <Formik initialValues={product} onSubmit={onSubmit} onChange={onChange}>
     {(props) => (
-      <Form>
+      <Form onSubmit={props.handleSubmit}>
         <FormGroup>
           <Label for="name">Name</Label>
-          <Field name="name" placeholder="Name" component={Input} />
+          <FastField name="name" placeholder="Name" as={Input}
+            onChange={event => { props.setFieldValue('name', event.target.value); }}
+            onBlur={props.handleBlur}
+            value={props.values.name}
+          />
           <ErrorMessage name="name" />
         </FormGroup>
 
         <FormGroup>
-          <Label for="band">Band</Label>
-          <Field name="band" placeholder="Band" component={Input} />
-          <ErrorMessage name="band" />
+          <Label for="brand">Brand</Label>
+          <FastField name="brand" placeholder="Brand" as={Input}
+            onChange={event => { props.setFieldValue('brand', event.target.value); }}
+            onBlur={props.handleBlur}
+            value={props.values.brand}
+          />
+          <ErrorMessage name="brand" />
         </FormGroup>
 
         <FormGroup>
           <Label for="rating">Rating</Label>
-          <Field name="rating" placeholder="Rating" component={Input} />
+          <FastField type="number" name="rating" id="rating1" placeholder="Rating" as={Input}
+            onChange={event => { props.setFieldValue('rating', event.target.value); }}
+            onBlur={props.handleBlur}
+            value={props.values.rating}
+          />
+          <FastField type="range" name="rating" id="rating2" placeholder="Rating" as={CustomInput}
+            onChange={event => { props.setFieldValue('rating', event.target.value); }}
+            onBlur={props.handleBlur}
+            value={props.values.rating}
+          />
           <ErrorMessage name="rating" />
         </FormGroup>
 
         <FormGroup check>
           <Label check>
-            <Field type="checkbox" name="featured" placeholder="Featured" component={Input} /> Featured
+            <FastField type="checkbox" name="featured" placeholder="Featured" as={Input}
+              onChange={event => { props.setFieldValue('featured', event.target.value); }}
+              onBlur={props.handleBlur}
+              value={props.values.featured}
+            /> Featured
           </Label>
           <ErrorMessage name="Featured" />
         </FormGroup>
 
         <FormGroup>
           <Label for="itemsInStock">Items in stock</Label>
-          <Field type="number" name="itemsInStock" placeholder="Items in stock" component={Input} />
+          <FastField type="number" name="itemsInStock" placeholder="Items in stock" as={Input}
+            onChange={event => { props.setFieldValue('itemsInStock', event.target.value); }}
+            onBlur={props.handleBlur}
+            value={props.values.itemsInStock}
+          />
           <ErrorMessage name="itemsInStock" />
         </FormGroup>
 
         <FormGroup>
-          <Field as="select" name="category">
-            {categories.map(category => (
-              <option value={category.id} key={category.id} selected={category.id === product.category}>{category.name}</option>
-            ))}
-          </Field>
-          <ErrorMessage name="category" />
+          <FastField
+            as={MultiSelect}
+            name="categories"
+            options={categories.map(({ id, name }) => ({ value: id, label: name }))}
+            onChange={option => { props.setFieldValue('categories', option.map(({ value }) => value)); }}
+            value={props.values.categories}
+          />
+          <ErrorMessage name="categories" />
         </FormGroup>
 
         <FormGroup>
           <Label for="receiptDate">Receipt date</Label>
-          <Field type="date" name="receiptDate" placeholder="Receipt date" component={Input} />
+          <FastField type="date" name="receiptDate" placeholder="Receipt date" as={Input}
+            onChange={event => { props.setFieldValue('receiptDate', parseDate(event.target.value)); }}
+            onBlur={props.handleBlur}
+            value={parseDate(props.values.receiptDate)}
+          />
           <ErrorMessage name="receiptDate" />
         </FormGroup>
 
         <FormGroup>
           <Label for="expirationDate">Expiration Date</Label>
-          <Field type="date" name="expirationDate" placeholder="Expiration Date" component={Input} />
+          <FastField type="date" name="expirationDate" placeholder="Expiration Date" as={Input}
+            onChange={event => { props.setFieldValue('expirationDate', parseDate(event.target.value)); }}
+            onBlur={props.handleBlur}
+            value={parseDate(props.values.expirationDate)}
+          />
           <ErrorMessage name="expirationDate" />
         </FormGroup>
 
         <FormGroup>
-          <Label for="receiptDate">Receipt date</Label>
-          <Field type="date" name="receiptDate" placeholder="Receipt date" component={Input} />
-          <ErrorMessage name="receiptDate" />
+          <Label for="createdAt">Created At</Label>
+          <FastField type="date" name="createdAt" placeholder="Created At" as={Input}
+            onChange={event => { props.setFieldValue('createdAt', parseDate(event.target.value)); }}
+            onBlur={props.handleBlur}
+            value={parseDate(props.values.createdAt)}
+          />
+          <ErrorMessage name="createdAt" />
         </FormGroup>
 
         <Button type="submit" onSubmit={onCancel}>Cancel</Button>
         {' '}
-        <Button type="submit" color="primary" onSubmit={onSubmit}>Submit</Button>
+        <Button type="submit" color="primary">Submit</Button>
       </Form>
     )}
   </Formik>
@@ -78,7 +122,7 @@ ProductEditForm.propTypes = {
   onSubmit: PropTypes.func,
   onCancel: PropTypes.func,
   product: PropTypes.object.isRequired,
-  categories: PropTypes.arrayOf(CategoryType)
+  categories: PropTypes.arrayOf(PropTypes.shape(CategoryType))
 };
 
 export default ProductEditForm;
