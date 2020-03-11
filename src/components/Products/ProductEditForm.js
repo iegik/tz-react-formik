@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { FastField, Form, Formik, ErrorMessage } from 'formik';
 import { Input, CustomInput, FormGroup, Label, Button } from 'reactstrap';
 import moment from 'moment';
+import Ratings from 'react-ratings-declarative';
 import CategoryType from './CategoryType';
 import MultiSelect from './MultiSelect';
 
@@ -39,12 +40,27 @@ const ProductEditForm = ({ onSubmit, onCancel, onChange, product, categories = [
             onChange={event => { props.setFieldValue('rating', event.target.value); }}
             onBlur={props.handleBlur}
             value={props.values.rating}
+            max={10}
+            min={0}
           />
           <FastField type="range" name="rating" id="rating2" placeholder="Rating" as={CustomInput}
-            onChange={event => { props.setFieldValue('rating', event.target.value); }}
+            onChange={event => { props.setFieldValue('rating', parseInt(event.target.value)); }}
             onBlur={props.handleBlur}
+            max={10}
             value={props.values.rating}
           />
+          <FastField as={Ratings} name="rating" id="rating3"
+            changeRating={value => { props.setFieldValue('rating', parseInt(value) * 2); }}
+            onBlur={props.handleBlur}
+            rating={(parseInt(props.values.rating) || 0) * 0.5}
+          >
+            <Ratings.Widget/>
+            <Ratings.Widget/>
+            <Ratings.Widget/>
+            <Ratings.Widget/>
+            <Ratings.Widget/>
+          </FastField>
+
           <ErrorMessage name="rating" />
         </FormGroup>
 
@@ -110,7 +126,7 @@ const ProductEditForm = ({ onSubmit, onCancel, onChange, product, categories = [
           <ErrorMessage name="createdAt" />
         </FormGroup>
 
-        <Button type="submit" onSubmit={onCancel}>Cancel</Button>
+        <Button onClick={onCancel}>Cancel</Button>
         {' '}
         <Button type="submit" color="primary">Submit</Button>
       </Form>
