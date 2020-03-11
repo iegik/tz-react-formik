@@ -1,8 +1,7 @@
 import React, { useReducer, useCallback, useEffect } from 'react';
-import { connect } from 'react-redux';
 import ProductEditForm from './ProductEditForm';
 import { products as productsReducer } from '../../reducers/products';
-import { categories as categoriesReducer, getCategoriesById } from '../../reducers/categories';
+import { categories as categoriesReducer } from '../../reducers/categories';
 import { fetchUpdateProduct, fetchProductById, fetchDeleteProduct } from '../../actions/products';
 import { fetchCategories } from '../../actions/categories';
 import { parseDateIn } from './parsers';
@@ -35,12 +34,12 @@ const ProductEditFormContainer = (props) => {
   }, [props.history]);
 
   const onSubmit = useCallback((product) => {
-    fetchUpdateProduct(product, +new Date())(productsDispatch);
+    fetchUpdateProduct(product)(productsDispatch);
     goBack();
   }, [goBack]);
 
   const onDelete = useCallback(() => {
-    fetchDeleteProduct(product, +new Date())(productsDispatch);
+    fetchDeleteProduct(product)(productsDispatch);
     goBack();
   }, [goBack, product]);
 
@@ -64,16 +63,4 @@ const ProductEditFormContainer = (props) => {
   );
 };
 
-const mapStateToProps = (state, props) => {
-  const categoriesById = getCategoriesById(state);
-  // const productId = parseInt(props.match.params.id);
-  // const productById = getProductById(state, productId == null ? null : productId);
-
-  return {
-    // product: productById,
-    categories: categoriesById,
-  }
-};
-
-
-export default connect(mapStateToProps)(ProductEditFormContainer);
+export default ProductEditFormContainer;

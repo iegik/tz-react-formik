@@ -59,13 +59,15 @@ export const fetchProductById = (productId) => dispatch => {
   dispatch(receiveProduct(json));
 };
 
-export const fetchUpdateProduct = (product, requestId) => dispatch => {
+export const fetchUpdateProduct = (product) => dispatch => {
+  const requestId = +new Date();
   dispatch(requestProductUpdate(product, requestId));
   const json = productApi.setProduct(product);
   dispatch(receiveProductId(json, requestId));
 };
 
-export const fetchDeleteProduct = (product, requestId) => dispatch => {
+export const fetchDeleteProduct = (product) => dispatch => {
+  const requestId = +new Date();
   dispatch(requestProductDelete(product, requestId));
   const json = productApi.deleteProduct(product);
   dispatch(receiveDeletedProductId(json, requestId));

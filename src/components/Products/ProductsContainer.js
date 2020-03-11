@@ -28,7 +28,7 @@ class ProductsContainer extends Component {
 
     function handleDelete(product) {
       if (window.confirm(`Are you sure you want to delete "${product.name}"`)) {
-        dispatch(fetchDeleteProduct(product, +new Date()));
+        dispatch(fetchDeleteProduct(product));
       }
     }
 
