@@ -12,7 +12,7 @@ const ProductEditFormContainer = (props) => {
   const [categories, categoriesDispatch] = useReducer(categoriesReducer, []);
 
   const productId = parseInt(props.match.params.id);
-  const product = products.find(product => product.id === productId) || { categories: [], createdAt: parseDateIn(new Date()) };
+  const product = products.find(product => product.id === productId) || { createdAt: parseDateIn(new Date()) };
 
   const goBack = useCallback(function () {
     props.history.push('/');
@@ -35,7 +35,6 @@ const ProductEditFormContainer = (props) => {
 
   return (
     <ProductEditForm
-      key={product.id}
       product={product}
       categories={categories}
       onSubmit={onSubmit}
