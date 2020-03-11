@@ -3,11 +3,12 @@ import PropTypes from 'prop-types';
 import { FastField, Form, Formik, ErrorMessage } from 'formik';
 import { Input, CustomInput, FormGroup, Label, Button } from 'reactstrap';
 import Ratings from 'react-ratings-declarative';
+import { Grid, Row, Col } from 'react-flexbox-grid';
 import CategoryType from './CategoryType';
 import MultiSelect from './MultiSelect';
 import { parseDateIn, parseDateOut } from './parsers';
 
-const ProductEditForm = ({ onSubmit, onCancel, product, categories = [] }) => (
+const ProductEditForm = ({ onSubmit, onCancel, onDelete, product, categories = [] }) => (
   <Formik initialValues={product} onSubmit={onSubmit}>
     {(props) => (
       <Form onSubmit={props.handleSubmit}>
@@ -135,11 +136,16 @@ const ProductEditForm = ({ onSubmit, onCancel, product, categories = [] }) => (
         </FormGroup> */}
 
         <hr/>
-        <Button onClick={onCancel} color="link">Back</Button>
-        {' '}
-        <Button type="submit" color="primary">Submit</Button>
-        <br/>
-        <br/>
+        <Grid>
+          <Row between="xs">
+            <Col xs={2}><Button onClick={onDelete} color="danger">Delete</Button></Col>
+            <Col xs={2}>
+              <Button onClick={onCancel} color="link">Back</Button>
+              {' '}
+              <Button type="submit" color="primary">Submit</Button>
+            </Col>
+          </Row>
+        </Grid>
       </Form>
     )}
   </Formik>
@@ -148,6 +154,7 @@ const ProductEditForm = ({ onSubmit, onCancel, product, categories = [] }) => (
 ProductEditForm.propTypes = {
   onSubmit: PropTypes.func,
   onCancel: PropTypes.func,
+  onDelete: PropTypes.func,
   product: PropTypes.object.isRequired,
   categories: PropTypes.arrayOf(PropTypes.shape(CategoryType))
 };

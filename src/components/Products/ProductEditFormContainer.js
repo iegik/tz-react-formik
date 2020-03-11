@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import ProductEditForm from './ProductEditForm';
 import { products as productsReducer, initialState as productsInitialState } from '../../reducers/products';
 import { categories as categoriesReducer, getCategoriesById } from '../../reducers/categories';
-import { fetchUpdateProduct, fetchProductById } from '../../actions/products';
+import { fetchUpdateProduct, fetchProductById, fetchDeleteProduct } from '../../actions/products';
 import { fetchCategories } from '../../actions/categories';
 import { parseDateIn } from './parsers';
 
@@ -23,6 +23,11 @@ const ProductEditFormContainer = (props) => {
     goBack();
   }, [goBack]);
 
+  const onDelete = useCallback((product) => {
+    fetchDeleteProduct(product, +new Date())(productsDispatch);
+    goBack();
+  }, [goBack]);
+
   useEffect(() => {
     fetchProductById(productId)(productsDispatch);
     fetchCategories()(categoriesDispatch);
@@ -35,6 +40,7 @@ const ProductEditFormContainer = (props) => {
       categories={categories}
       onSubmit={onSubmit}
       onCancel={goBack}
+      onDelete={onDelete}
     />
   );
 };

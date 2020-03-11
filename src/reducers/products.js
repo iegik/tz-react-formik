@@ -8,6 +8,7 @@ export function products(state = initialState, action) {
       return [
         ...action.products,
       ];
+
     case productsActions.RECEIVE_PRODUCT:
       if (!action.product) {
         return state;
@@ -16,18 +17,38 @@ export function products(state = initialState, action) {
         ...state,
         action.product,
       ];
-    case productsActions.REQUEST_PRODUCT_UPDATE:
+
+    case productsActions.REQUEST_PRODUCT_UPDATE: {
+      const product = state.find(product => product.id === action.product.id);
+
       return [
-        {...action.product, requestId: action.requestId},
+        {...product, requestId: action.requestId},
         ...state.filter(product => product.id !== action.product.id),
       ];
-    case productsActions.RECEIVE_PRODUCT_ID:
+    }
+
+    case productsActions.REQUEST_PRODUCT_DELETE: {
+      const product = state.find(product => product.id === action.product.id);
+
+      return [
+        {...product, requestId: action.requestId},
+        ...state.filter(product => product.id !== action.product.id),
+      ];
+    }
+
+    case productsActions.RECEIVE_PRODUCT_ID: {
       const {requestId, ...product} = state.find(product => product.requestId === action.requestId);
 
       return [
         {...product, id: action.productId },
         ...state.filter(product => product.requestId !== action.requestId),
       ];
+    }
+
+    case productsActions.RECEIVE_DELETED_PRODUCT_ID: {
+      return state.filter(product => product.requestId !== action.requestId);
+    }
+
     default:
       return state;
   }

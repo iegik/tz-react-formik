@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import Header from '../Header/Header';
 import ProductsList from './ProductsList';
 import { fetchCategories } from '../../actions/categories';
-import { fetchProducts } from '../../actions/products';
+import { fetchProducts, fetchDeleteProduct } from '../../actions/products';
 import { getCategoriesById } from '../../reducers/categories';
 
 class ProductsContainer extends Component {
@@ -16,7 +16,7 @@ class ProductsContainer extends Component {
   }
 
   render() {
-    const { products, history } = this.props;
+    const { products, history, dispatch } = this.props;
 
     function handleClick(id) {
       history.push(`/edit/${id}`);
@@ -26,10 +26,16 @@ class ProductsContainer extends Component {
       history.push(`/edit`);
     }
 
+    function handleDelete(product) {
+      if (window.confirm(`Are you sure you want to delete "${product.name}"`)) {
+        dispatch(fetchDeleteProduct(product, +new Date()));
+      }
+    }
+
     return (
       <Fragment>
         <Header name="Products"/>
-        <ProductsList products={products} onEdit={handleClick} onCreate={handleCreate}/>
+        <ProductsList products={products} onEdit={handleClick} onCreate={handleCreate} onDelete={handleDelete}/>
       </Fragment>
     );
   }
