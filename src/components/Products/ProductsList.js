@@ -23,6 +23,10 @@ const ProductList = ({ products, onEdit, onCreate, onDelete }) => {
         <Button onClick={onCreate} size="medium" color="primary" >Add product</Button>
       </center>
       <br/>
+      <center>
+        <p className="text-muted">Note: Products can be deleted by press and holding mouse click over the card</p>
+      </center>
+      <br/>
     </Container>
   );
 };
