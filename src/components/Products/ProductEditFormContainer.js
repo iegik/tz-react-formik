@@ -7,12 +7,23 @@ import { fetchUpdateProduct, fetchProductById, fetchDeleteProduct } from '../../
 import { fetchCategories } from '../../actions/categories';
 import { parseDateIn } from './parsers';
 
+const defaultProduct = {
+  name: '',
+  brand: '',
+  rating: 0,
+  featured: false,
+  itemsInStock: 0,
+  categories: [],
+  receiptDate: '',
+  expirationDate: '',
+}
+
 const ProductEditFormContainer = (props) => {
   const [products, productsDispatch] = useReducer(productsReducer, productsInitialState);
   const [categories, categoriesDispatch] = useReducer(categoriesReducer, []);
 
   const productId = parseInt(props.match.params.id);
-  const product = products.find(product => product.id === productId) || { createdAt: parseDateIn(new Date()) };
+  const product = products.find(product => product.id === productId) || { ...defaultProduct, createdAt: parseDateIn(new Date()) };
 
   const goBack = useCallback(function () {
     props.history.push('/');

@@ -14,7 +14,7 @@ const compareByFn = fn => (name, message) => (errors, values) => fn(values[name]
   : errors;
 
 const isEmpty = value =>  value == null || value === '';
-const greaterNumber = (value, number) => value == null || parseInt(value) > number;
+const greaterNumber = (value, number) => parseInt(value || 0) > number;
 const greaterArray = (value, number) => value == null || value.length > number;
 const greaterText = (value, number) => value == null || value.length > number;
 
@@ -29,17 +29,17 @@ const autoFeatured = (props, rating) => {
   }
 };
 
+const validate = (values) => [
+  isRequired('name', 'Name is required'),
+  greaterText200('name', 'Name length should not be greater then 200'),
+  greaterNumber10('rating', 'Rating should not be greater than 10'),
+  isRequired('rating', 'Rating is required'),
+  greaterArray5('categories', 'A product should have from 1 to 5 categories'),
+  isRequired('categories', 'A product should have from 1 to 5 categories'),
+].reduce((errors, fn) => fn(errors, values), {});
+
 const ProductEditForm = ({ onSubmit, onCancel, onDelete, product, categories = [] }) => (
-  <Formik initialValues={product} onSubmit={onSubmit}
-    validate={(values) => [
-      isRequired('name', 'Name is required'),
-      greaterText200('name', 'Name length should not be greater then 200'),
-      greaterNumber10('rating', 'Rating should not be greater than 10'),
-      isRequired('rating', 'Rating is required'),
-      greaterArray5('categories', 'A product should have from 1 to 5 categories'),
-      isRequired('categories', 'A product should have from 1 to 5 categories'),
-    ].reduce((errors, fn) => fn(errors, values), {})}
-  >
+  <Formik initialValues={product} onSubmit={onSubmit} validate={validate}>
     {(props) => (
       <Form onSubmit={props.handleSubmit}>
         <FormGroup>
@@ -69,7 +69,7 @@ const ProductEditForm = ({ onSubmit, onCancel, onDelete, product, categories = [
         <FormGroup>
           <Label for="rating">Rating</Label>
           <FastField type="number" name="rating" id="rating1" placeholder="Rating" as={Input}
-            onChange={event => { props.setFieldValue('rating', parseInt(event.target.value)); autoFeatured(props); }}
+            onChange={event => { props.setFieldValue('rating', parseInt(event.target.value || 0) || ''); autoFeatured(props); }}
             onBlur={props.handleBlur}
             value={props.values.rating}
             max={10}
@@ -78,7 +78,7 @@ const ProductEditForm = ({ onSubmit, onCancel, onDelete, product, categories = [
             invalid={props.errors.rating != null}
           />
           <FastField type="range" name="rating" id="rating2" placeholder="Rating" as={CustomInput}
-            onChange={event => { const value = parseInt(event.target.value); props.setFieldValue('rating', value); autoFeatured(props, value); }}
+            onChange={event => { const value = parseInt(event.target.value || 0); props.setFieldValue('rating', value || ''); autoFeatured(props, value); }}
             onBlur={props.handleBlur}
             max={10}
             value={props.values.rating == null ? '' : props.values.rating}
@@ -86,9 +86,9 @@ const ProductEditForm = ({ onSubmit, onCancel, onDelete, product, categories = [
             invalid={props.errors.rating != null}
           />
           <FastField as={Ratings} name="rating" id="rating3"
-            changeRating={ratings => { const value = parseInt(ratings) * 2; props.setFieldValue('rating', value); autoFeatured(props, value); }}
+            changeRating={ratings => { const value = parseInt(ratings || 0) * 2; props.setFieldValue('rating', value || ''); autoFeatured(props, value); }}
             onBlur={props.handleBlur}
-            rating={(parseInt(props.values.rating) || 0) * 0.5}
+            rating={parseInt(props.values.rating || 0) * 0.5}
             valid={props.touched.rating && props.errors.rating == null}
             invalid={props.errors.rating != null}
           >
@@ -130,7 +130,7 @@ const ProductEditForm = ({ onSubmit, onCancel, onDelete, product, categories = [
         <FormGroup>
           <Label for="itemsInStock">Items in stock</Label>
           <FastField type="number" name="itemsInStock" placeholder="Items in stock" as={Input}
-            onChange={event => { props.setFieldValue('itemsInStock', parseInt(event.target.value)); }}
+            onChange={event => { props.setFieldValue('itemsInStock', parseInt(event.target.value || 0) || ''); }}
             onBlur={props.handleBlur}
             value={props.values.itemsInStock == null ? '' : props.values.itemsInStock}
             min={0}
