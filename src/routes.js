@@ -2,7 +2,7 @@ import React from 'react'
 import { HashRouter , Switch, Route } from 'react-router-dom'
 import Main from './components/Main/Main'
 import ProductsContainer from './components/Products/ProductsContainer'
-import ProductEditForm from './components/Products/ProductEditForm'
+import ProductEditFormContainer from './components/Products/ProductEditFormContainer'
 import NotFound from './components/NotFound/NotFound'
 
 export function getRoutes() {
@@ -11,7 +11,7 @@ export function getRoutes() {
       <Main>
         <Switch>
           <Route exact path="/" component={ProductsContainer}/>,
-          <Route exact path="/edit" component={ProductEditForm}/>,
+          <Route exact path={["/edit", "/edit/:id"]} component={ProductEditFormContainer}/>,
           <Route path="*" component={NotFound}/>,
         </Switch>
       </Main>

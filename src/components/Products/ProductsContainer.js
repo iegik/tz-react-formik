@@ -16,12 +16,20 @@ class ProductsContainer extends Component {
   }
 
   render() {
-    const { products } = this.props;
+    const { products, history } = this.props;
+
+    function handleClick(id) {
+      history.push(`/edit/${id}`);
+    }
+
+    function handleCreate(id) {
+      history.push(`/edit`);
+    }
 
     return (
       <Fragment>
         <Header name="Products"/>
-        <ProductsList products={products}/>
+        <ProductsList products={products} onEdit={handleClick} onCreate={handleCreate}/>
       </Fragment>
     );
   }
