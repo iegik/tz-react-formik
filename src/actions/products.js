@@ -3,7 +3,7 @@ import { productApi } from '../gateways/ProductApi';
 export const REQUEST_PRODUCTS = 'REQUEST_PRODUCTS';
 export const RECEIVE_PRODUCTS = 'RECEIVE_PRODUCTS';
 export const REQUEST_PRODUCT_UPDATE = 'REQUEST_PRODUCT_UPDATE';
-export const RECEIVE_PRODUCT_ID = 'RECEIVE_PRODUCT_ID';
+export const RECEIVE_UPDATED_PRODUCT_ID = 'RECEIVE_UPDATED_PRODUCT_ID';
 export const RECEIVE_DELETED_PRODUCT_ID = 'RECEIVE_DELETED_PRODUCT_ID';
 export const RECEIVE_PRODUCT = 'RECEIVE_PRODUCT';
 export const REQUEST_PRODUCT_DELETE = 'REQUEST_PRODUCT_DELETE';
@@ -30,9 +30,10 @@ const requestProductDelete = (product, requestId) => ({
 });
 
 const receiveProductId = (json, requestId) => ({
-  type: RECEIVE_PRODUCT_ID,
-  productId: json.id,
+  type: RECEIVE_UPDATED_PRODUCT_ID,
+  product: json.product,
   requestId,
+  storedAt: json.storedAt,
 });
 
 const receiveDeletedProductId = (json, requestId) => ({

@@ -1,26 +1,27 @@
 import products from '../mocks/products';
 
-let store = [...products];
 const takeIdProperty = ({ id }) => id;
 
-class ProductApi {
+export class ProductApi {
+  constructor() {
+    this.store = [...products];
+  }
   getProducts = () => {
-    return store;
+    return this.store;
   }
   getProductById = (productId) => {
-    return store.find(product => product.id === productId);
+    return this.store.find(product => product.id === productId);
   }
-  setProduct = ({ categories, ...product }) => {
+  setProduct = (product) => {
     const storedAt = (new Date()).toISOString();
     if (!product.id) {
-      const id = store[store.length - 1].id + 1;
+      const id = this.store[this.store.length - 1].id + 1;
 
-      store = [
-        ...store,
+      this.store = [
+        ...this.store,
         {
           ...product,
           id, // replacing with new id
-          categories: categories.map(takeIdProperty),
           storedAt
         }
       ];
@@ -28,22 +29,25 @@ class ProductApi {
       return { id, storedAt };
     }
 
-    store = [
-      ...store.filter(({ id }) => id !== product.id),
+    this.store = [
+      ...this.store.filter(({ id }) => id !== product.id),
       {
         ...product,
-        categories: categories.map(takeIdProperty),
         storedAt
       }
     ];
 
-    return { id: product.id, storedAt };
+    return { product, storedAt };
   }
 
   deleteProduct = ({ categories, ...product }) => {
     const deletedAt = (new Date()).toISOString();
 
-    store = store.filter(({ id }) => product.id !== id);
+    if (product.id == null) {
+      return {};
+    }
+
+    this.store = this.store.filter(({ id }) => product.id !== id);
 
     return { ...product, categories: categories.map(takeIdProperty), deletedAt };
   }

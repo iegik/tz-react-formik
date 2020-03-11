@@ -48,7 +48,6 @@ const ProductEditForm = ({ onSubmit, onCancel, onDelete, product, categories = [
             onChange={event => { props.setFieldValue('name', event.target.value); }}
             onBlur={props.handleBlur}
             value={props.values.name}
-            valid={props.touched.name && props.errors.name == null}
             invalid={props.errors.name != null}
           />
           <ErrorMessage component={FormFeedback} name="name" />
@@ -60,37 +59,35 @@ const ProductEditForm = ({ onSubmit, onCancel, onDelete, product, categories = [
             onChange={event => { props.setFieldValue('brand', event.target.value); }}
             onBlur={props.handleBlur}
             value={props.values.brand}
-            valid={props.touched.brand && props.errors.brand == null}
             invalid={props.errors.brand != null}
           />
           <ErrorMessage component={FormFeedback} name="brand" />
         </FormGroup>
 
         <FormGroup>
-          <Label for="rating">Rating</Label>
-          <FastField type="number" name="rating" id="rating1" placeholder="Rating" as={Input}
-            onChange={event => { props.setFieldValue('rating', parseInt(event.target.value || 0) || ''); autoFeatured(props); }}
+          {/* <Label for="rating">Rating</Label> */}
+          {/* <FastField type="number" name="rating" id="rating1" placeholder="Rating" as={Input}
+            onChange={event => { const value = parseInt(event.target.value || 0); props.setFieldValue('rating', value); autoFeatured(props, value); }}
             onBlur={props.handleBlur}
             value={props.values.rating}
             max={10}
             min={0}
-            valid={props.touched.rating && props.errors.rating == null}
-            invalid={props.errors.rating != null}
+            invalid={props.errors.rating}
           />
           <FastField type="range" name="rating" id="rating2" placeholder="Rating" as={CustomInput}
-            onChange={event => { const value = parseInt(event.target.value || 0); props.setFieldValue('rating', value || ''); autoFeatured(props, value); }}
+            onChange={event => { const value = parseInt(event.target.value || 0); props.setFieldValue('rating', value); autoFeatured(props, value); }}
             onBlur={props.handleBlur}
             max={10}
             value={props.values.rating == null ? '' : props.values.rating}
-            valid={props.touched.rating && props.errors.rating == null}
-            invalid={props.errors.rating != null}
-          />
+            invalid={props.errors.rating}
+          /> */}
+          <div className={props.errors.rating != null ? 'is-invalid  ' : ''}>
           <FastField as={Ratings} name="rating" id="rating3"
-            changeRating={ratings => { const value = parseInt(ratings || 0) * 2; props.setFieldValue('rating', value || ''); autoFeatured(props, value); }}
+            changeRating={ratings => { const value = parseInt(ratings || 0) * 2; props.setFieldValue('rating', value); autoFeatured(props, value); }}
             onBlur={props.handleBlur}
             rating={parseInt(props.values.rating || 0) * 0.5}
-            valid={props.touched.rating && props.errors.rating == null}
             invalid={props.errors.rating != null}
+            widgetRatedColors="#007bff"
           >
             <Ratings.Widget/>
             <Ratings.Widget/>
@@ -98,27 +95,26 @@ const ProductEditForm = ({ onSubmit, onCancel, onDelete, product, categories = [
             <Ratings.Widget/>
             <Ratings.Widget/>
           </FastField>
+          </div>
 
           <ErrorMessage component={FormFeedback} name="rating" />
         </FormGroup>
 
         <FormGroup>
           <FormGroup check>
-            <Label check>
+            {/* <Label check>
               <FastField type="checkbox" name="featured" placeholder="Featured" as={Input}
                 onChange={event => { props.setFieldValue('featured', event.target.checked); }}
                 onBlur={props.handleBlur}
                 checked={props.values.featured}
-                valid={props.touched.featured && props.errors.featured == null}
                 invalid={props.errors.featured != null}
               /> Featured
-            </Label>
+            </Label> */}
 
             <FastField type="switch" name="featured" id="featured1" placeholder="Featured" as={CustomInput}
               onChange={event => { props.setFieldValue('featured', event.target.checked); }}
               onBlur={props.handleBlur}
               checked={props.values.featured}
-              valid={props.touched.featured && props.errors.featured == null}
               invalid={props.errors.featured != null}
               label="Featured"
             />
@@ -132,9 +128,8 @@ const ProductEditForm = ({ onSubmit, onCancel, onDelete, product, categories = [
           <FastField type="number" name="itemsInStock" placeholder="Items in stock" as={Input}
             onChange={event => { props.setFieldValue('itemsInStock', parseInt(event.target.value || 0) || ''); }}
             onBlur={props.handleBlur}
-            value={props.values.itemsInStock == null ? '' : props.values.itemsInStock}
+            value={props.values.itemsInStock}
             min={0}
-            valid={props.touched.itemsInStock && props.errors.itemsInStock == null}
             invalid={props.errors.itemsInStock != null}
           />
           <ErrorMessage component={FormFeedback} name="itemsInStock" />
@@ -147,7 +142,6 @@ const ProductEditForm = ({ onSubmit, onCancel, onDelete, product, categories = [
             options={categories.map(({ id, name }) => ({ value: id, label: name }))}
             onChange={option => { props.setFieldValue('categories', option && option.map(({ value }) => value)); }}
             value={props.values.categories == null ? [] : props.values.categories}
-            valid={props.touched.categories && props.errors.categories == null}
             invalid={props.errors.categories != null}
           />
           <ErrorMessage component={FormFeedback} name="categories" />
@@ -159,7 +153,6 @@ const ProductEditForm = ({ onSubmit, onCancel, onDelete, product, categories = [
             onChange={event => { props.setFieldValue('receiptDate', parseDateIn(event.target.value)); }}
             onBlur={props.handleBlur}
             value={parseDateOut(props.values.receiptDate)}
-            valid={props.touched.receiptDate && props.errors.receiptDate == null}
             invalid={props.errors.receiptDate != null}
           />
           <ErrorMessage component={FormFeedback} name="receiptDate" />
@@ -171,7 +164,6 @@ const ProductEditForm = ({ onSubmit, onCancel, onDelete, product, categories = [
             onChange={event => { props.setFieldValue('expirationDate', parseDateIn(event.target.value)); }}
             onBlur={props.handleBlur}
             value={parseDateOut(props.values.expirationDate)}
-            valid={props.touched.expirationDate && props.errors.expirationDate == null}
             invalid={props.errors.expirationDate != null}
           />
           <ErrorMessage component={FormFeedback} name="expirationDate" />
@@ -183,7 +175,6 @@ const ProductEditForm = ({ onSubmit, onCancel, onDelete, product, categories = [
             onChange={event => { props.setFieldValue('createdAt', parseDateIn(event.target.value)); }}
             onBlur={props.handleBlur}
             value={parseDateOut(props.values.createdAt)}
-            valid={props.touched.createdAt && props.errors.createdAt == null}
             invalid={props.errors.createdAt != null}
           />
           <ErrorMessage component={FormFeedback} name="createdAt" />

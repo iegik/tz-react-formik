@@ -36,11 +36,9 @@ export function products(state = initialState, action) {
       ];
     }
 
-    case productsActions.RECEIVE_PRODUCT_ID: {
-      const {requestId, ...product} = state.find(product => product.requestId === action.requestId);
-
+    case productsActions.RECEIVE_UPDATED_PRODUCT_ID: {
       return [
-        {...product, id: action.productId },
+        action.product,
         ...state.filter(product => product.requestId !== action.requestId),
       ];
     }
@@ -61,4 +59,10 @@ export function getProductsById(state) {
       [product.id]: product
     }
   }, {})
+}
+
+export function getProductById(state, productId) {
+  const productsById = getProductsById(state);
+
+  return productsById[productId];
 }
