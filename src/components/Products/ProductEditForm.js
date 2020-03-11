@@ -2,16 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { FastField, Form, Formik, ErrorMessage } from 'formik';
 import { Input, CustomInput, FormGroup, Label, Button } from 'reactstrap';
-import moment from 'moment';
 import Ratings from 'react-ratings-declarative';
 import CategoryType from './CategoryType';
 import MultiSelect from './MultiSelect';
+import { parseDateIn, parseDateOut } from './parsers';
 
-const DATE_FORMAT = 'YYYY-MM-DD';
-const parseDate = timestamp => moment(timestamp ? new Date(timestamp) : null).format(DATE_FORMAT);
-
-const ProductEditForm = ({ onSubmit, onCancel, onChange, product, categories = [] }) => (
-  <Formik initialValues={product} onSubmit={onSubmit} onChange={onChange}>
+const ProductEditForm = ({ onSubmit, onCancel, product, categories = [] }) => (
+  <Formik initialValues={product} onSubmit={onSubmit}>
     {(props) => (
       <Form onSubmit={props.handleSubmit}>
         <FormGroup>
@@ -37,7 +34,7 @@ const ProductEditForm = ({ onSubmit, onCancel, onChange, product, categories = [
         <FormGroup>
           <Label for="rating">Rating</Label>
           <FastField type="number" name="rating" id="rating1" placeholder="Rating" as={Input}
-            onChange={event => { props.setFieldValue('rating', event.target.value); }}
+            onChange={event => { props.setFieldValue('rating', parseInt(event.target.value)); }}
             onBlur={props.handleBlur}
             value={props.values.rating}
             max={10}
@@ -47,7 +44,7 @@ const ProductEditForm = ({ onSubmit, onCancel, onChange, product, categories = [
             onChange={event => { props.setFieldValue('rating', parseInt(event.target.value)); }}
             onBlur={props.handleBlur}
             max={10}
-            value={props.values.rating}
+            value={props.values.rating == null ? '' : props.values.rating}
           />
           <FastField as={Ratings} name="rating" id="rating3"
             changeRating={value => { props.setFieldValue('rating', parseInt(value) * 2); }}
@@ -64,23 +61,34 @@ const ProductEditForm = ({ onSubmit, onCancel, onChange, product, categories = [
           <ErrorMessage name="rating" />
         </FormGroup>
 
-        <FormGroup check>
-          <Label check>
-            <FastField type="checkbox" name="featured" placeholder="Featured" as={Input}
-              onChange={event => { props.setFieldValue('featured', event.target.value); }}
+        <FormGroup>
+          <FormGroup check>
+            <Label check>
+              <FastField type="checkbox" name="featured" placeholder="Featured" as={Input}
+                onChange={event => { props.setFieldValue('featured', event.target.checked); }}
+                onBlur={props.handleBlur}
+                checked={props.values.featured}
+              /> Featured
+            </Label>
+
+            <FastField type="switch" name="featured" id="featured1" placeholder="Featured" as={CustomInput}
+              onChange={event => { props.setFieldValue('featured', event.target.checked); }}
               onBlur={props.handleBlur}
-              value={props.values.featured}
-            /> Featured
-          </Label>
-          <ErrorMessage name="Featured" />
+              checked={props.values.featured}
+              label="Featured"
+            />
+
+            <ErrorMessage name="Featured" />
+          </FormGroup>
         </FormGroup>
 
         <FormGroup>
           <Label for="itemsInStock">Items in stock</Label>
           <FastField type="number" name="itemsInStock" placeholder="Items in stock" as={Input}
-            onChange={event => { props.setFieldValue('itemsInStock', event.target.value); }}
+            onChange={event => { props.setFieldValue('itemsInStock', parseInt(event.target.value)); }}
             onBlur={props.handleBlur}
-            value={props.values.itemsInStock}
+            value={props.values.itemsInStock == null ? '' : props.values.itemsInStock}
+            min={0}
           />
           <ErrorMessage name="itemsInStock" />
         </FormGroup>
@@ -91,7 +99,7 @@ const ProductEditForm = ({ onSubmit, onCancel, onChange, product, categories = [
             name="categories"
             options={categories.map(({ id, name }) => ({ value: id, label: name }))}
             onChange={option => { props.setFieldValue('categories', option.map(({ value }) => value)); }}
-            value={props.values.categories}
+            value={props.values.categories || []}
           />
           <ErrorMessage name="categories" />
         </FormGroup>
@@ -99,9 +107,9 @@ const ProductEditForm = ({ onSubmit, onCancel, onChange, product, categories = [
         <FormGroup>
           <Label for="receiptDate">Receipt date</Label>
           <FastField type="date" name="receiptDate" placeholder="Receipt date" as={Input}
-            onChange={event => { props.setFieldValue('receiptDate', parseDate(event.target.value)); }}
+            onChange={event => { props.setFieldValue('receiptDate', parseDateIn(event.target.value)); }}
             onBlur={props.handleBlur}
-            value={parseDate(props.values.receiptDate)}
+            value={parseDateOut(props.values.receiptDate)}
           />
           <ErrorMessage name="receiptDate" />
         </FormGroup>
@@ -109,26 +117,29 @@ const ProductEditForm = ({ onSubmit, onCancel, onChange, product, categories = [
         <FormGroup>
           <Label for="expirationDate">Expiration Date</Label>
           <FastField type="date" name="expirationDate" placeholder="Expiration Date" as={Input}
-            onChange={event => { props.setFieldValue('expirationDate', parseDate(event.target.value)); }}
+            onChange={event => { props.setFieldValue('expirationDate', parseDateIn(event.target.value)); }}
             onBlur={props.handleBlur}
-            value={parseDate(props.values.expirationDate)}
+            value={parseDateOut(props.values.expirationDate)}
           />
           <ErrorMessage name="expirationDate" />
         </FormGroup>
 
-        <FormGroup>
+        {/* <FormGroup>
           <Label for="createdAt">Created At</Label>
           <FastField type="date" name="createdAt" placeholder="Created At" as={Input}
-            onChange={event => { props.setFieldValue('createdAt', parseDate(event.target.value)); }}
+            onChange={event => { props.setFieldValue('createdAt', parseDateIn(event.target.value)); }}
             onBlur={props.handleBlur}
-            value={parseDate(props.values.createdAt)}
+            value={parseDateOut(props.values.createdAt)}
           />
           <ErrorMessage name="createdAt" />
-        </FormGroup>
+        </FormGroup> */}
 
-        <Button onClick={onCancel}>Cancel</Button>
+        <hr/>
+        <Button onClick={onCancel} color="link">Back</Button>
         {' '}
         <Button type="submit" color="primary">Submit</Button>
+        <br/>
+        <br/>
       </Form>
     )}
   </Formik>
